@@ -1,5 +1,15 @@
 import React from "react";
+import { HashRouter as Router, Switch, Route } from "react-router-dom";
+import Compilation from "./Compilation";
 
 export default function App() {
-  return <div>Hello World!</div>;
+  return (
+    <Router>
+      <Switch>
+        <Route exact path="/compilation/:data">
+          <Compilation />
+        </Route>
+      </Switch>
+    </Router>
+  );
 }

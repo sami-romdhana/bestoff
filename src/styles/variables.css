@@ -1,3 +1,9 @@
 :root {
-  --font: -apple-system, system-ui, sans-serif;
+  --font: "Inter", -apple-system, system-ui, sans-serif;
+}
+
+@supports (font-variation-settings: normal) {
+  :root {
+    --font: "Inter var", -apple-system, system-ui, sans-serif;
+  }
 }
