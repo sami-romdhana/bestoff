@@ -2,6 +2,7 @@ export interface ICompilation {
   version: "1.0.0";
   data: {
     title: string;
+    author: string;
     playlist: IPlaylist;
   };
 }

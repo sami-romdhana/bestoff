@@ -1,0 +1,13 @@
+.Header {
+  text-align: center;
+}
+
+.Header > h1 {
+  font-size: 3em;
+  letter-spacing: -0.08em;
+  font-weight: 200;
+}
+
+.Header > h1 > span {
+  font-weight: 600;
+}

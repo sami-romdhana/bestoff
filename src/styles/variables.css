@@ -1,5 +1,8 @@
 :root {
   --font: "Inter", -apple-system, system-ui, sans-serif;
+
+  --color-background: #333;
+  --color-text: white;
 }
 
 @supports (font-variation-settings: normal) {

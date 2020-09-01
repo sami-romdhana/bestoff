@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import YouTube from "react-youtube";
 import { Clip, StateChangeEvent, PlayerState, IPlaylist } from "types";
+import "./style.css";
 
 interface PlayerProps {
   playlist: IPlaylist;
@@ -47,18 +48,24 @@ export function Player(props: PlayerProps) {
   );
 
   return (
-    <YouTube
-      videoId={playlist[currentClip.video][0]}
-      onStateChange={onStateChange}
-      onReady={onReady}
-      opts={{
-        playerVars: {
-          autoplay: 1,
-          modestbranding: 1,
-          start: playlist[currentClip.video][1][currentClip.bounds][0],
-          end: playlist[currentClip.video][1][currentClip.bounds][1],
-        },
-      }}
-    />
+    <div className="Player">
+      <div className="Player--embed">
+        <YouTube
+          videoId={playlist[currentClip.video][0]}
+          onStateChange={onStateChange}
+          onReady={onReady}
+          opts={{
+            width: "100%",
+            height: "100%",
+            playerVars: {
+              autoplay: 1,
+              modestbranding: 1,
+              start: playlist[currentClip.video][1][currentClip.bounds][0],
+              end: playlist[currentClip.video][1][currentClip.bounds][1],
+            },
+          }}
+        />
+      </div>
+    </div>
   );
 }
