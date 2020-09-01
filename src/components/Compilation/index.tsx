@@ -8,7 +8,10 @@ export default function Compilation() {
   const { data: encodedData } = useParams();
 
   const compilation = useMemo(
-    () => JSON.parse(atob(encodedData)) as ICompilation,
+    () =>
+      JSON.parse(
+        atob(encodedData.replace(/_/g, "/").replace(/-/g, "+"))
+      ) as ICompilation,
     [encodedData]
   );
 

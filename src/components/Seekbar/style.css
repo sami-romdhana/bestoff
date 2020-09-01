@@ -1,0 +1,36 @@
+.Seekbar {
+  display: flex;
+  height: 22px;
+  align-items: center;
+}
+
+.Seekbar--clip {
+  flex-shrink: 0;
+  flex-basis: auto;
+  transition: all 0.1s;
+  border-radius: 2px;
+  height: 10px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.Seekbar--clip:hover {
+  height: 14px;
+}
+
+.Seekbar--clip + .Seekbar--clip {
+  margin-left: 6px;
+}
+
+.Seekbar--clip-active {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.Seekbar--clip-active:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.Seekbar--clip-active ~ .Seekbar--clip {
+  background-color: transparent;
+}

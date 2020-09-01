@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import YouTube from "react-youtube";
 import { Clip, StateChangeEvent, PlayerState, IPlaylist } from "types";
+import Seekbar from "components/Seekbar";
 import "./style.css";
 
 interface PlayerProps {
@@ -47,6 +48,14 @@ export function Player(props: PlayerProps) {
     [ready, setReady, currentClip, playlist]
   );
 
+  const onClipChange = useCallback(
+    (request: Clip) => {
+      setCurrentClip(request);
+      setReady(false);
+    },
+    [setCurrentClip, setReady]
+  );
+
   return (
     <div className="Player">
       <div className="Player--embed">
@@ -64,6 +73,14 @@ export function Player(props: PlayerProps) {
               end: playlist[currentClip.video][1][currentClip.bounds][1],
             },
           }}
+        />
+      </div>
+
+      <div className="Player--seekbar">
+        <Seekbar
+          playlist={playlistObj}
+          currentClip={currentClip}
+          onClipChange={onClipChange}
         />
       </div>
     </div>
