@@ -5,8 +5,9 @@
 
 .Compilation > p {
   margin-bottom: 1.2em;
+  color: #888;
 }
 
 .Compilation > p > span {
-  opacity: 0.5;
+  color: #ccc;
 }

@@ -1,17 +1,27 @@
 import React, { useState, useCallback } from "react";
 import YouTube from "react-youtube";
-import { Clip, StateChangeEvent, PlayerState, IPlaylist } from "types";
+import {
+  IClip,
+  StateChangeEvent,
+  PlayerState,
+  IPlaylist,
+  ISelectedClip,
+} from "types";
 import Seekbar from "components/Seekbar";
 import "./style.css";
 
 interface PlayerProps {
   playlist: IPlaylist;
+  clips: Array<IClip>;
 }
 
 export function Player(props: PlayerProps) {
-  const { playlist: playlistObj } = props;
+  const { playlist: playlistObj, clips } = props;
   const playlist = Object.entries(playlistObj);
-  const [currentClip, setCurrentClip] = useState<Clip>({ video: 0, bounds: 0 });
+  const [currentClip, setCurrentClip] = useState<ISelectedClip>({
+    video: 0,
+    clip: 0,
+  });
   const [ready, setReady] = useState<boolean>(false);
 
   const onReady = useCallback(() => {
@@ -32,24 +42,24 @@ export function Player(props: PlayerProps) {
         return;
       }
 
-      if (currentClip.bounds + 1 >= playlist[currentClip.video][1].length) {
+      if (currentClip.clip + 1 >= playlist[currentClip.video][1].length) {
         if (currentClip.video + 1 >= playlist.length) {
           return;
         }
 
-        setCurrentClip({ video: currentClip.video + 1, bounds: 0 });
+        setCurrentClip({ video: currentClip.video + 1, clip: 0 });
         setReady(false);
         return;
       }
 
-      setCurrentClip({ ...currentClip, bounds: currentClip.bounds + 1 });
+      setCurrentClip({ ...currentClip, clip: currentClip.clip + 1 });
       setReady(false);
     },
     [ready, setReady, currentClip, playlist]
   );
 
   const onClipChange = useCallback(
-    (request: Clip) => {
+    (request: ISelectedClip) => {
       setCurrentClip(request);
       setReady(false);
     },
@@ -69,8 +79,8 @@ export function Player(props: PlayerProps) {
             playerVars: {
               autoplay: 1,
               modestbranding: 1,
-              start: playlist[currentClip.video][1][currentClip.bounds][0],
-              end: playlist[currentClip.video][1][currentClip.bounds][1],
+              start: playlist[currentClip.video][1][currentClip.clip][0],
+              end: playlist[currentClip.video][1][currentClip.clip][1],
             },
           }}
         />
@@ -78,7 +88,7 @@ export function Player(props: PlayerProps) {
 
       <div className="Player--seekbar">
         <Seekbar
-          playlist={playlistObj}
+          clips={clips}
           currentClip={currentClip}
           onClipChange={onClipChange}
         />

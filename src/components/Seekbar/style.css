@@ -1,36 +1,171 @@
 .Seekbar {
+  padding: 1em 0 3em;
+}
+
+.Seekbar--main-wrapper {
+  position: relative;
+}
+
+.Seekbar--hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.Seekbar--hover > div {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: background-color 0.1s;
+  pointer-events: none;
+}
+
+.Seekbar:hover .Seekbar--hover > div {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.Seekbar .Seekbar--hover:hover > div {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.Seekbar--main {
   display: flex;
-  height: 22px;
+  height: 28px;
   align-items: center;
+  padding: 0 10px;
 }
 
 .Seekbar--clip {
   flex-shrink: 0;
   flex-basis: auto;
   transition: all 0.1s;
-  border-radius: 2px;
   height: 10px;
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0.3);
+  border-right: none;
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-.Seekbar--clip:hover {
-  height: 14px;
+.Seekbar--clip:first-child {
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
 }
 
-.Seekbar--clip + .Seekbar--clip {
-  margin-left: 6px;
+.Seekbar--clip:last-child {
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .Seekbar--clip-active {
   background-color: rgba(255, 255, 255, 0.3);
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+  position: relative;
 }
 
-.Seekbar--clip-active:hover {
-  background-color: rgba(255, 255, 255, 0.4);
+.Seekbar--clip-active::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(255, 255, 255, 0.3);
 }
 
 .Seekbar--clip-active ~ .Seekbar--clip {
   background-color: transparent;
+}
+
+.Seekbar--zoomed {
+  padding: 10px 10px 0;
+  overflow: hidden;
+  position: relative;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.Seekbar:hover .Seekbar--zoomed {
+  opacity: 1;
+}
+
+.Seekbar--zoomed::before,
+.Seekbar--zoomed::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 10px;
+  height: 100%;
+  z-index: 10;
+}
+
+.Seekbar--zoomed::before {
+  left: 0;
+  background-image: linear-gradient(to right, #333, transparent);
+}
+
+.Seekbar--zoomed::after {
+  right: 0;
+  background-image: linear-gradient(to left, #333, transparent);
+}
+
+.Seekbar--zoomed > div {
+  height: 60px;
+  position: relative;
+}
+
+.Seekbar--zoomed-inner {
+  position: absolute;
+  top: 0;
+  display: flex;
+  align-items: center;
+  height: 60px;
+}
+
+.Seekbar--zoomed-clip {
+  flex-shrink: 0;
+  flex-basis: auto;
+  transition: all 0.1s;
+  height: 40px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  position: relative;
+}
+
+.Seekbar--zoomed-clip > div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+}
+
+.Seekbar--zoomed-clip + .Seekbar--zoomed-clip {
+  margin-left: 8px;
+}
+
+.Seekbar--zoomed-clip:hover,
+.Seekbar--zoomed-clip-active {
+  height: 50px;
+}
+
+.Seekbar--zoomed-clip-active ~ .Seekbar--zoomed-clip {
+  background-color: transparent;
+}
+
+.Seekbar--zoomed-clip:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.Seekbar--zoomed-clip-active {
+  background-color: rgba(255, 255, 255, 0.3);
 }

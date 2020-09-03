@@ -24,7 +24,14 @@ export enum PlayerState {
   Cued = 5,
 }
 
-export interface Clip {
+export interface IClip {
+  videoID: number;
+  clipID: number;
+  bounds: [number, number];
+  length: number;
+}
+
+export interface ISelectedClip {
   video: number;
-  bounds: number;
+  clip: number;
 }
