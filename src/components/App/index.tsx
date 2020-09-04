@@ -2,6 +2,7 @@ import React from "react";
 import { HashRouter as Router, Switch, Route } from "react-router-dom";
 import Header from "components/Header";
 import Compilation from "components/Compilation";
+import Editor from "components/Editor";
 import "./style.css";
 
 export default function App() {
@@ -15,6 +16,9 @@ export default function App() {
         <Switch>
           <Route exact path="/compilation/:data">
             <Compilation />
+          </Route>
+          <Route exact path={["/editor", "/editor/:data"]}>
+            <Editor />
           </Route>
         </Switch>
       </Router>

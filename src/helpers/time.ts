@@ -4,7 +4,7 @@ export function formatDuration(length: number): string {
   }
 
   if (length < 60) {
-    return length.toString().padStart(2, "0") + "s";
+    return Math.floor(length).toString().padStart(2, "0") + "s";
   }
 
   if (length < 3600) {

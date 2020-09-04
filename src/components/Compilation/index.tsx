@@ -2,19 +2,22 @@ import React, { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { ICompilation, IClip } from "types";
 import { formatDuration } from "helpers/time";
+import { decode } from "helpers/payload";
+import useTitle from "hooks/title";
 import { Player } from "components/Player";
 import "./style.css";
 
 export default function Compilation() {
   const { data: encodedData } = useParams();
 
-  const compilation: ICompilation = useMemo(
-    () => JSON.parse(atob(encodedData.replace(/_/g, "/").replace(/-/g, "+"))),
-    [encodedData]
-  );
+  const payload: ICompilation = useMemo(() => decode(encodedData), [
+    encodedData,
+  ]);
 
-  const playlist = useMemo(() => Object.entries(compilation.data.playlist), [
-    compilation,
+  useTitle(payload.data.title, { hyphen: true });
+
+  const playlist = useMemo(() => Object.entries(payload.data.playlist), [
+    payload,
   ]);
 
   const clips: Array<IClip> = useMemo(
@@ -37,13 +40,13 @@ export default function Compilation() {
 
   return (
     <div className="Compilation">
-      <h2>{compilation.data.title}</h2>
+      <h2>{payload.data.title}</h2>
 
       <p>
         <span>{formatDuration(length)}</span> long compilation with{" "}
         <span>{clips.length} clips</span> across{" "}
         <span>{playlist.length} videos</span> by{" "}
-        <span>{compilation.data.author}</span>
+        <span>{payload.data.author}</span>
       </p>
 
       <Player playlist={playlist} clips={clips} />
