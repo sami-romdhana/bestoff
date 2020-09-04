@@ -1,49 +1,64 @@
-import React, { useState, useCallback } from "react";
-import YouTube from "react-youtube";
-import {
-  IClip,
-  StateChangeEvent,
-  PlayerState,
-  IPlaylist,
-  ISelectedClip,
-} from "types";
+import React, { useState, useCallback, useRef } from "react";
+import ReactPlayer from "react-player";
+import { IClip, IPlaylist, ISelectedClip } from "types";
 import Seekbar from "components/Seekbar";
 import "./style.css";
 
+type Entries<T> = {
+  [K in keyof T]: [K, T[K]];
+}[keyof T][];
+
 interface PlayerProps {
-  playlist: IPlaylist;
+  playlist: Entries<IPlaylist>;
   clips: Array<IClip>;
 }
 
 export function Player(props: PlayerProps) {
-  const { playlist: playlistObj, clips } = props;
-  const playlist = Object.entries(playlistObj);
+  const { playlist, clips } = props;
+  const [progress, setProgress] = useState<number>(0);
+  const playerRef = useRef<ReactPlayer>(null);
   const [currentClip, setCurrentClip] = useState<ISelectedClip>({
     video: 0,
     clip: 0,
   });
   const [ready, setReady] = useState<boolean>(false);
 
-  const onReady = useCallback(() => {
-    setReady(true);
-  }, [setReady]);
+  const onClipChange = useCallback(
+    (request: ISelectedClip) => {
+      setCurrentClip(request);
+      setReady(false);
+    },
+    [setCurrentClip, setReady]
+  );
 
-  const onStateChange = useCallback(
-    (event: StateChangeEvent) => {
-      if (event.data === PlayerState.Playing && !ready) {
-        setReady(true);
-      }
-
-      if (event.data !== PlayerState.Ended) {
-        return;
-      }
+  const onProgress = useCallback(
+    ({ playedSeconds }: { playedSeconds: number }) => {
+      setProgress(playedSeconds);
 
       if (!ready) {
+        if (
+          playedSeconds >=
+            playlist[currentClip.video][1][currentClip.clip][0] &&
+          playedSeconds < playlist[currentClip.video][1][currentClip.clip][1]
+        ) {
+          setReady(true);
+        } else {
+          playerRef.current?.seekTo(
+            playlist[currentClip.video][1][currentClip.clip][0]
+          );
+        }
         return;
       }
+
+      if (
+        !ready ||
+        playedSeconds < playlist[currentClip.video][1][currentClip.clip][1]
+      )
+        return;
 
       if (currentClip.clip + 1 >= playlist[currentClip.video][1].length) {
         if (currentClip.video + 1 >= playlist.length) {
+          (playerRef.current?.getInternalPlayer() as any)?.pauseVideo();
           return;
         }
 
@@ -55,32 +70,27 @@ export function Player(props: PlayerProps) {
       setCurrentClip({ ...currentClip, clip: currentClip.clip + 1 });
       setReady(false);
     },
-    [ready, setReady, currentClip, playlist]
-  );
-
-  const onClipChange = useCallback(
-    (request: ISelectedClip) => {
-      setCurrentClip(request);
-      setReady(false);
-    },
-    [setCurrentClip, setReady]
+    [setProgress, ready, setReady, currentClip, playlist]
   );
 
   return (
     <div className="Player">
       <div className="Player--embed">
-        <YouTube
-          videoId={playlist[currentClip.video][0]}
-          onStateChange={onStateChange}
-          onReady={onReady}
-          opts={{
-            width: "100%",
-            height: "100%",
-            playerVars: {
-              autoplay: 1,
-              modestbranding: 1,
-              start: playlist[currentClip.video][1][currentClip.clip][0],
-              end: playlist[currentClip.video][1][currentClip.clip][1],
+        <ReactPlayer
+          ref={playerRef}
+          playing={true}
+          url={"https://youtube.com/watch?v=" + playlist[currentClip.video][0]}
+          onProgress={onProgress}
+          light={true}
+          width={"100%"}
+          height={"100%"}
+          config={{
+            youtube: {
+              playerVars: {
+                autoplay: 1,
+                modestbranding: 1,
+                start: playlist[currentClip.video][1][currentClip.clip][0],
+              },
             },
           }}
         />
@@ -91,6 +101,7 @@ export function Player(props: PlayerProps) {
           clips={clips}
           currentClip={currentClip}
           onClipChange={onClipChange}
+          progress={progress}
         />
       </div>
     </div>

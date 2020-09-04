@@ -4,6 +4,7 @@
   height: 0;
 }
 
+.Player--embed > *,
 .Player--embed iframe {
   position: absolute;
   top: 0;

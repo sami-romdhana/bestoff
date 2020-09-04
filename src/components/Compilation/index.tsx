@@ -1,9 +1,9 @@
 import React, { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { ICompilation, IClip } from "types";
+import { formatDuration } from "helpers/time";
 import { Player } from "components/Player";
 import "./style.css";
-import { formatDuration } from "helpers/time";
 
 export default function Compilation() {
   const { data: encodedData } = useParams();
@@ -13,9 +13,13 @@ export default function Compilation() {
     [encodedData]
   );
 
+  const playlist = useMemo(() => Object.entries(compilation.data.playlist), [
+    compilation,
+  ]);
+
   const clips: Array<IClip> = useMemo(
     () =>
-      Object.entries(compilation.data.playlist).flatMap(([, clips], videoID) =>
+      playlist.flatMap(([, clips], videoID) =>
         clips.map((bounds, clipID) => ({
           videoID,
           clipID,
@@ -23,7 +27,7 @@ export default function Compilation() {
           length: bounds[1] - bounds[0],
         }))
       ),
-    [compilation]
+    [playlist]
   );
 
   const length: number = useMemo(
@@ -38,11 +42,11 @@ export default function Compilation() {
       <p>
         <span>{formatDuration(length)}</span> long compilation with{" "}
         <span>{clips.length} clips</span> across{" "}
-        <span>{Object.keys(compilation.data.playlist).length} videos</span> by{" "}
+        <span>{playlist.length} videos</span> by{" "}
         <span>{compilation.data.author}</span>
       </p>
 
-      <Player playlist={compilation.data.playlist} clips={clips} />
+      <Player playlist={playlist} clips={clips} />
     </div>
   );
 }
