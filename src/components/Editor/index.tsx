@@ -5,11 +5,11 @@ import React, {
   useCallback,
   useEffect,
 } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import ReactPlayer from "react-player";
-import { IPlaylist } from "types";
+import { ICompilation, IPlaylist } from "types";
 import { formatDuration } from "helpers/time";
-import { encode } from "helpers/payload";
+import { encode, decode } from "helpers/payload";
 import useTitle from "hooks/title";
 import useInput from "hooks/input";
 import "./style.css";
@@ -17,16 +17,20 @@ import "./style.css";
 export default function Editor() {
   useTitle("Editor");
   const history = useHistory();
-  const [title, titleInput] = useInput();
-  const [author, authorInput] = useInput();
-  const [youtubeURL, youtubeInput] = useInput();
+  const { data: encodedData } = useParams();
+  const payload: ICompilation = useMemo(() => decode(encodedData), [
+    encodedData,
+  ]);
+  const [title, titleInput] = useInput(payload.data.title);
+  const [author, authorInput] = useInput(payload.data.author);
+  const [youtubeURL, youtubeInput, setYouTubeURL] = useInput();
   const youtubeID = useMemo(() => getYoutubeIDFromURL(youtubeURL), [
     youtubeURL,
   ]);
   const playerRef = useRef<ReactPlayer>(null);
   const [clipStart, setClipStart] = useState<number | undefined>();
   const [clipEnd, setClipEnd] = useState<number | undefined>();
-  const [playlist, setPlaylist] = useState<IPlaylist>({});
+  const [playlist, setPlaylist] = useState<IPlaylist>(payload.data.playlist);
   const playlistEntries = useMemo(() => Object.entries(playlist), [playlist]);
 
   const setStart = useCallback(() => {
@@ -87,56 +91,164 @@ export default function Editor() {
     navigator.clipboard.writeText(currentURL);
   }, [currentURL]);
 
+  const setVideo = useCallback(
+    (id: string) => {
+      setYouTubeURL("https://youtube.com/watch?v=" + id);
+    },
+    [setYouTubeURL]
+  );
+
+  const skipTo = useCallback((to: number) => {
+    playerRef.current?.seekTo(to);
+    (playerRef.current?.getInternalPlayer() as any)?.playVideo();
+  }, []);
+
   return (
     <div className="Editor">
-      <input type="text" {...titleInput} placeholder="Compilation title" />
-      <input type="text" {...authorInput} placeholder="Your name" />
-      <input
-        type="url"
-        {...youtubeInput}
-        placeholder="Paste a YouTube video URL here"
-      />
-      {!!youtubeURL.length && youtubeID === null && <p>Invalid URL</p>}
-      {youtubeID && (
-        <>
-          <ReactPlayer
-            ref={playerRef}
-            controls={true}
-            url={"https://youtube.com/watch?v=" + youtubeID}
-          />
-
-          <div>
-            [{clipStart ? formatDuration(clipStart) : "?"},{" "}
-            {clipEnd ? formatDuration(clipEnd) : "?"}]
+      <div className="Editor--video">
+        <div>
+          <div className="Editor--video-input">
+            <input
+              type="url"
+              {...youtubeInput}
+              placeholder="Paste a YouTube video URL here"
+            />
+            {!!youtubeURL.length && youtubeID === null && <span>&times;</span>}
           </div>
+          {youtubeID ? (
+            <>
+              <div className="Editor--player">
+                <ReactPlayer
+                  ref={playerRef}
+                  controls={true}
+                  width={"100%"}
+                  height={"100%"}
+                  url={"https://youtube.com/watch?v=" + youtubeID}
+                  config={{
+                    youtube: {
+                      playerVars: {
+                        showinfo: 0,
+                      },
+                    },
+                  }}
+                />
+              </div>
 
-          <button onClick={setStart}>Start clip here</button>
-          <button onClick={setEnd}>End clip here</button>
-          <button onClick={done}>Done</button>
-        </>
-      )}
-      {!!playlistEntries.length && (
-        <>
-          <input type="text" value={currentURL} />{" "}
-          <button onClick={copyURL}>Copy URL</button>{" "}
-          <a href={currentURL} target="_blank" rel="noopener noreferrer">
-            Open
-          </a>
-          <h2>Clips</h2>
-          {playlistEntries.map(([video, clips]) => (
-            <div key={video}>
-              <pre>{video}</pre>
+              <div className="Editor--clippers">
+                <button onClick={setStart}>Start clip here</button>
 
-              <ul>
-                {clips.map((clip) => (
-                  <li key={clip[0] + "_" + clip[1]}>
-                    {formatDuration(clip[0])} to {formatDuration(clip[1])}
-                  </li>
-                ))}
-              </ul>
+                <div className="Editor--boundaries">
+                  [
+                  {clipStart ? (
+                    <span onClick={() => skipTo(clipStart)}>
+                      {formatDuration(clipStart)}
+                    </span>
+                  ) : (
+                    "?"
+                  )}
+                  , {clipEnd ? formatDuration(clipEnd) : "?"}]
+                </div>
+
+                <button onClick={setEnd}>End clip here</button>
+              </div>
+
+              <div className="Editor--add">
+                <button onClick={done}>Add to playlist</button>
+              </div>
+            </>
+          ) : (
+            <div className="Editor--video-placeholder">
+              <div>Enter a video first</div>
             </div>
+          )}
+        </div>
+      </div>
+      <div className="Editor--content">
+        <div className="Editor--content-part">
+          <h2>Details</h2>
+          <label>
+            <span>Title</span>
+            <input
+              type="text"
+              {...titleInput}
+              placeholder="Compilation title"
+            />
+          </label>
+          <label>
+            <span>Author</span>
+            <input type="text" {...authorInput} placeholder="Your name" />
+          </label>
+        </div>
+        <div className="Editor--content-part Editor--share">
+          <h2>Share</h2>
+          <input type="text" value={currentURL} />{" "}
+          <div>
+            <button onClick={copyURL}>Copy URL</button>{" "}
+            <a href={currentURL} target="_blank" rel="noopener noreferrer">
+              Open
+            </a>
+          </div>
+        </div>
+        <div className="Editor--content-part">
+          <h2>Playlist</h2>
+          {playlistEntries.length ? (
+            playlistEntries.map(([video, clips]) => (
+              <PlaylistVideoClips
+                video={video}
+                clips={clips}
+                setVideo={setVideo}
+                skipTo={skipTo}
+              />
+            ))
+          ) : (
+            <div className="Editor--playlist-empty">No clips added</div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface PlaylistVideoClipsProps {
+  video: string;
+  clips: Array<[number, number]>;
+  setVideo: (id: string) => unknown;
+  skipTo: (to: number) => unknown;
+}
+
+function PlaylistVideoClips(props: PlaylistVideoClipsProps) {
+  const { video, clips, setVideo, skipTo } = props;
+  const [expanded, setExpanded] = useState<boolean>(false);
+
+  return (
+    <div className="Editor--playlist-video" key={video}>
+      <div>
+        <div>
+          <pre onClick={() => setVideo(video)}>{video}</pre> ({clips.length}{" "}
+          clips)
+        </div>
+        <button
+          onClick={() => setExpanded(!expanded)}
+          disabled={clips.length === 0}
+        >
+          {expanded ? "-" : "+"}
+        </button>
+      </div>
+
+      {expanded && (
+        <ul>
+          {clips.map((clip) => (
+            <li className="Editor--playlist-clip" key={clip[0] + "_" + clip[1]}>
+              <pre onClick={() => skipTo(clip[0])}>
+                {formatDuration(clip[0])}
+              </pre>{" "}
+              -{" "}
+              <pre onClick={() => skipTo(clip[1])}>
+                {formatDuration(clip[1])}
+              </pre>
+            </li>
           ))}
-        </>
+        </ul>
       )}
     </div>
   );

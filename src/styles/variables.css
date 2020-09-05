@@ -1,12 +1,12 @@
 :root {
-  --font: "Inter", -apple-system, system-ui, sans-serif;
+  --font-system: -apple-system, system-ui, sans-serif;
+  --font: "Inter", var(--font-system);
 
-  --color-background: #333;
+  --color-background: rgb(48, 45, 45);
   --color-text: white;
-}
+  --color-gradient-1: rgb(255, 0, 64);
+  --color-gradient-2: rgb(255, 51, 0);
+  --color-accent: var(--color-gradient-2);
 
-@supports (font-variation-settings: normal) {
-  :root {
-    --font: "Inter var", -apple-system, system-ui, sans-serif;
-  }
+  --size-max-width: 960px;
 }

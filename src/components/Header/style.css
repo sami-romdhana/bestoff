@@ -1,13 +1,59 @@
 .Header {
+  --gradient: linear-gradient(to right, rgb(255, 0, 64), rgb(255, 51, 0));
+  position: relative;
   text-align: center;
+  background: var(--gradient);
 }
 
-.Header > h1 {
+.Header::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  filter: blur(10px);
+  z-index: 0;
+  background: var(--gradient);
+}
+
+.Header > div,
+.Header > div > div {
+  display: flex;
+  align-items: center;
+}
+
+.Header > div {
+  padding: 1em 10px;
+  justify-content: space-between;
+}
+
+.Header--title {
+  color: white;
+  text-decoration: none;
+}
+
+.Header--title > h1 {
   font-size: 3em;
   letter-spacing: -0.08em;
   font-weight: 200;
 }
 
-.Header > h1 > span {
+.Header--title > h1 > span {
   font-weight: 600;
+}
+
+.Header > div > div > a {
+  color: white;
+  padding: 0.3em 0.5em;
+}
+
+.Header > div > div > a + a {
+  margin-left: 1.5em;
+}
+
+.Header > div > div > .Header--create {
+  background: white;
+  color: red;
+  border-radius: 4px;
 }

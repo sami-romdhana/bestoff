@@ -80,6 +80,7 @@ export function Player(props: PlayerProps) {
           ref={playerRef}
           playing={true}
           url={"https://youtube.com/watch?v=" + playlist[currentClip.video][0]}
+          progressInterval={16}
           onProgress={onProgress}
           light={true}
           width={"100%"}
@@ -90,6 +91,7 @@ export function Player(props: PlayerProps) {
                 autoplay: 1,
                 modestbranding: 1,
                 start: playlist[currentClip.video][1][currentClip.clip][0],
+                end: playlist[currentClip.video][1][currentClip.clip][1],
               },
             },
           }}

@@ -2,16 +2,22 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  opacity: 0.5;
-  margin-top: 1em;
+  margin: 2em 0 1em;
 }
 
 .Footer > :first-child {
   margin-bottom: 1em;
   font-size: 12px;
+  opacity: 0.5;
 }
 
 .Footer > :last-child svg {
   width: 40px;
   height: 40px;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.Footer > :last-child svg:hover {
+  opacity: 1;
 }

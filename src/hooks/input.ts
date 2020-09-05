@@ -1,13 +1,16 @@
 import { useState } from "react";
 
-export default function useInput(): [
+export default function useInput(
+  defaultValue: string = ""
+): [
   string,
   {
     value: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => unknown;
-  }
+  },
+  (value: string) => unknown
 ] {
-  const [value, setValue] = useState<string>("");
+  const [value, setValue] = useState<string>(defaultValue);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
@@ -18,5 +21,5 @@ export default function useInput(): [
     onChange,
   };
 
-  return [value, inputProps];
+  return [value, inputProps, setValue];
 }

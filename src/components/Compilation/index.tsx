@@ -39,7 +39,7 @@ export default function Compilation() {
   );
 
   return (
-    <div className="Compilation">
+    <div className="Compilation global--wrapper">
       <h2>{payload.data.title}</h2>
 
       <p>

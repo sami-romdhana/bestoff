@@ -1,0 +1,30 @@
+.Homepage {
+  text-align: center;
+}
+
+.Homepage h2 {
+  font-size: 6em;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  max-width: 600px;
+  margin: 0 auto 1em;
+}
+
+.Homepage a {
+  display: inline-block;
+  background: linear-gradient(
+    to right,
+    var(--color-gradient-1),
+    var(--color-gradient-2)
+  );
+  color: white;
+  font-size: 2em;
+  padding: 0.5em 0.8em;
+  border-radius: 4px;
+  margin-bottom: 0.3em;
+}
+
+.Homepage p {
+  opacity: 0.5;
+  font-size: 0.8em;
+}

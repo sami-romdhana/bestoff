@@ -1,0 +1,22 @@
+# Bestoff
+
+> Create compilations in minutes
+
+## Getting started
+
+### Prerequisites
+
+- Node 12
+- NPM 6
+
+### Installing
+
+```
+npm install
+```
+
+## Deployment
+
+```
+npm run deploy
+```
