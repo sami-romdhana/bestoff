@@ -7,15 +7,13 @@
 }
 
 html,
-body {
-  font-family: var(--font);
-}
-
+body,
 button,
 input,
 select,
 textarea {
-  font-family: var(--font-system);
+  font-family: var(--font);
+  letter-spacing: -0.02em;
 }
 
 html,
@@ -28,6 +26,33 @@ body,
 
 html {
   user-select: none;
+}
+
+input {
+  padding: 0.35em 0.55em;
+  border: none;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1) inset,
+    0 2px 5px -2px rgba(0, 0, 0, 0.5) inset;
+  border-radius: 0.2em;
+}
+
+input:focus {
+  box-shadow: 0 0 0 0.15em var(--color-accent) inset,
+    0 0 0.5em -0.1em var(--color-accent);
+}
+
+button {
+  border: 1px solid white;
+  color: white;
+  background: transparent;
+  padding: 0.35em 0.65em 0.4em;
+  border-radius: 0.2em;
+  cursor: pointer;
+}
+
+button:hover {
+  background: white;
+  color: #333;
 }
 
 .global--wrapper {

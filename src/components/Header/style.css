@@ -24,7 +24,7 @@
 }
 
 .Header > div {
-  padding: 1em 10px;
+  padding: 1.1em 10px 1.2em;
   justify-content: space-between;
 }
 
@@ -56,4 +56,14 @@
   background: white;
   color: red;
   border-radius: 4px;
+}
+
+@media (max-width: 600px) {
+  .Header > div {
+    justify-content: center;
+  }
+
+  .Header > div > div {
+    display: none;
+  }
 }

@@ -26,3 +26,7 @@
 .EditorStart--load > div:first-child {
   margin-bottom: 10px;
 }
+
+.EditorStart--load button {
+  margin-left: 10px;
+}

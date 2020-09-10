@@ -1,12 +1,8 @@
 import React, { useState, useCallback, useRef } from "react";
 import ReactPlayer from "react-player";
-import { IClip, IPlaylist, ISelectedClip } from "types";
+import { IClip, IPlaylist, ISelectedClip, Entries } from "types";
 import Seekbar from "components/Seekbar";
 import "./style.css";
-
-type Entries<T> = {
-  [K in keyof T]: [K, T[K]];
-}[keyof T][];
 
 interface PlayerProps {
   playlist: Entries<IPlaylist>;

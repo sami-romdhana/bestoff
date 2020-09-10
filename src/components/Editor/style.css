@@ -21,7 +21,7 @@
 
 .Editor--video-input {
   position: relative;
-  margin-bottom: 1em;
+  margin-top: 1em;
 }
 
 .Editor--video-input > input {
@@ -71,31 +71,31 @@
   justify-content: center;
 }
 
-.Editor--clippers button,
-.Editor--add button {
+.Cutter--clippers button,
+.Cutter--add button {
   font-size: 1.2em;
 }
 
-.Editor--boundaries,
-.Editor--add {
+.Cutter--boundaries,
+.Cutter--add {
   text-align: center;
 }
 
-.Editor--clippers {
+.Cutter--clippers {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin: 1em 0;
 }
 
-.Editor--add {
+.Cutter--add {
   margin-top: 1em;
 }
 
 .Editor--content-part {
-  padding: 1em;
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.9em 1em 1.1em;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 2px;
 }
 
@@ -105,8 +105,7 @@
 
 .Editor--content h2 {
   font-weight: bold;
-  text-align: center;
-  margin-bottom: 1.5em;
+  margin-bottom: 1em;
   padding-bottom: 0.5em;
   font-size: 1.2em;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -123,35 +122,32 @@
 .Editor--content label > span {
   display: block;
   margin-bottom: 0.3em;
+  opacity: 0.8;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 0.8em;
+}
+
+.Editor--content label > input {
+  font-size: 1.2em;
 }
 
 .Editor--content label > input,
 .Editor--share > input {
-  font-size: 1.2em;
   width: 100%;
 }
 
-.Editor--share > input {
-  margin-bottom: 0.8em;
-}
-
-.Editor--share > div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.Editor--playlist-video + .Editor--playlist-video {
+.Playlist--video + .Playlist--video {
   margin-top: 1em;
 }
 
-.Editor--playlist-video > div:first-child {
+.Playlist--video > div:first-child {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.Editor--playlist-video pre {
+.Playlist--video pre {
   display: inline-block;
   background-color: rgba(0, 0, 0, 0.1);
   font-family: monospace;
@@ -160,15 +156,21 @@
   cursor: pointer;
 }
 
-.Editor--playlist-video > ul {
+.Playlist--video > ul {
   margin-top: 1em;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.Editor--playlist-video > ul > li {
+.Playlist--video > ul > li {
   padding: 0.5em;
 }
 
-.Editor--playlist-video > ul > li + li {
+.Playlist--video > ul > li + li {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.Playlist--video-expand {
+  padding: 1em;
+  margin: -1em;
+  cursor: pointer;
 }

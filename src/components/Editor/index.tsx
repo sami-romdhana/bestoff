@@ -8,10 +8,11 @@ import React, {
 import { useHistory, useParams } from "react-router-dom";
 import ReactPlayer from "react-player";
 import { ICompilation, IPlaylist } from "types";
-import { formatDuration } from "helpers/time";
 import { encode, decode } from "helpers/payload";
 import useTitle from "hooks/title";
 import useInput from "hooks/input";
+import Playlist from "./Playlist";
+import Cutter from "./Cutter";
 import "./style.css";
 
 export default function Editor() {
@@ -47,14 +48,17 @@ export default function Editor() {
     if (!youtubeID || !clipStart || !clipEnd) {
       return;
     }
+
     if (clipStart >= clipEnd) {
       alert("Clip can't start after its end");
       return;
     }
+
     const newPlaylist = deepClone(playlist);
     if (!newPlaylist[youtubeID]) newPlaylist[youtubeID] = [];
 
     newPlaylist[youtubeID].push([clipStart, clipEnd]);
+    newPlaylist[youtubeID] = newPlaylist[youtubeID].sort((a, b) => a[0] - b[0]);
     setPlaylist(newPlaylist);
     setClipStart(undefined);
     setClipEnd(undefined);
@@ -87,10 +91,6 @@ export default function Editor() {
     [currentPayload]
   );
 
-  const copyURL = useCallback(() => {
-    navigator.clipboard.writeText(currentURL);
-  }, [currentURL]);
-
   const setVideo = useCallback(
     (id: string) => {
       setYouTubeURL("https://youtube.com/watch?v=" + id);
@@ -107,6 +107,29 @@ export default function Editor() {
     <div className="Editor">
       <div className="Editor--video">
         <div>
+          {youtubeID ? (
+            <div className="Editor--player">
+              <ReactPlayer
+                ref={playerRef}
+                controls={true}
+                width={"100%"}
+                height={"100%"}
+                url={"https://youtube.com/watch?v=" + youtubeID}
+                config={{
+                  youtube: {
+                    playerVars: {
+                      showinfo: 0,
+                    },
+                  },
+                }}
+              />
+            </div>
+          ) : (
+            <div className="Editor--video-placeholder">
+              <div>Enter a video first</div>
+            </div>
+          )}
+
           <div className="Editor--video-input">
             <input
               type="url"
@@ -115,51 +138,17 @@ export default function Editor() {
             />
             {!!youtubeURL.length && youtubeID === null && <span>&times;</span>}
           </div>
-          {youtubeID ? (
-            <>
-              <div className="Editor--player">
-                <ReactPlayer
-                  ref={playerRef}
-                  controls={true}
-                  width={"100%"}
-                  height={"100%"}
-                  url={"https://youtube.com/watch?v=" + youtubeID}
-                  config={{
-                    youtube: {
-                      playerVars: {
-                        showinfo: 0,
-                      },
-                    },
-                  }}
-                />
-              </div>
 
-              <div className="Editor--clippers">
-                <button onClick={setStart}>Start clip here</button>
-
-                <div className="Editor--boundaries">
-                  [
-                  {clipStart ? (
-                    <span onClick={() => skipTo(clipStart)}>
-                      {formatDuration(clipStart)}
-                    </span>
-                  ) : (
-                    "?"
-                  )}
-                  , {clipEnd ? formatDuration(clipEnd) : "?"}]
-                </div>
-
-                <button onClick={setEnd}>End clip here</button>
-              </div>
-
-              <div className="Editor--add">
-                <button onClick={done}>Add to playlist</button>
-              </div>
-            </>
-          ) : (
-            <div className="Editor--video-placeholder">
-              <div>Enter a video first</div>
-            </div>
+          {!!youtubeID && (
+            <Cutter
+              youtubeID={youtubeID}
+              setStart={setStart}
+              setEnd={setEnd}
+              clipStart={clipStart}
+              clipEnd={clipEnd}
+              skipTo={skipTo}
+              done={done}
+            />
           )}
         </div>
       </div>
@@ -179,77 +168,25 @@ export default function Editor() {
             <input type="text" {...authorInput} placeholder="Your name" />
           </label>
         </div>
+
         <div className="Editor--content-part Editor--share">
           <h2>Share</h2>
-          <input type="text" value={currentURL} />{" "}
-          <div>
-            <button onClick={copyURL}>Copy URL</button>{" "}
-            <a href={currentURL} target="_blank" rel="noopener noreferrer">
-              Open
-            </a>
-          </div>
+          <input type="text" value={currentURL} readOnly={true} />
         </div>
+
         <div className="Editor--content-part">
           <h2>Playlist</h2>
           {playlistEntries.length ? (
-            playlistEntries.map(([video, clips]) => (
-              <PlaylistVideoClips
-                video={video}
-                clips={clips}
-                setVideo={setVideo}
-                skipTo={skipTo}
-              />
-            ))
+            <Playlist
+              entries={playlistEntries}
+              setVideo={setVideo}
+              skipTo={skipTo}
+            />
           ) : (
             <div className="Editor--playlist-empty">No clips added</div>
           )}
         </div>
       </div>
-    </div>
-  );
-}
-
-interface PlaylistVideoClipsProps {
-  video: string;
-  clips: Array<[number, number]>;
-  setVideo: (id: string) => unknown;
-  skipTo: (to: number) => unknown;
-}
-
-function PlaylistVideoClips(props: PlaylistVideoClipsProps) {
-  const { video, clips, setVideo, skipTo } = props;
-  const [expanded, setExpanded] = useState<boolean>(false);
-
-  return (
-    <div className="Editor--playlist-video" key={video}>
-      <div>
-        <div>
-          <pre onClick={() => setVideo(video)}>{video}</pre> ({clips.length}{" "}
-          clips)
-        </div>
-        <button
-          onClick={() => setExpanded(!expanded)}
-          disabled={clips.length === 0}
-        >
-          {expanded ? "-" : "+"}
-        </button>
-      </div>
-
-      {expanded && (
-        <ul>
-          {clips.map((clip) => (
-            <li className="Editor--playlist-clip" key={clip[0] + "_" + clip[1]}>
-              <pre onClick={() => skipTo(clip[0])}>
-                {formatDuration(clip[0])}
-              </pre>{" "}
-              -{" "}
-              <pre onClick={() => skipTo(clip[1])}>
-                {formatDuration(clip[1])}
-              </pre>
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 }

@@ -6,12 +6,12 @@
 }
 
 .App--header {
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 .App--content {
   flex: 1 0 auto;
-  padding: 10px;
+  padding: 10px 20px;
 }
 
 .App--loading {
