@@ -13,3 +13,9 @@
   flex: 1 0 auto;
   padding: 10px;
 }
+
+.App--loading {
+  text-align: center;
+  font-size: 5em;
+  opacity: 0.2;
+}

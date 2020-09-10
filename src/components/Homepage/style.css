@@ -10,6 +10,12 @@
   margin: 0 auto 1em;
 }
 
+@media (max-width: 650px) {
+  .Homepage h2 {
+    font-size: 4em;
+  }
+}
+
 .Homepage a {
   display: inline-block;
   background: linear-gradient(

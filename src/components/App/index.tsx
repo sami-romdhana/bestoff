@@ -1,12 +1,13 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { HashRouter as Router, Switch, Route } from "react-router-dom";
 import Header from "components/Header";
-import Homepage from "components/Homepage";
-import Compilation from "components/Compilation";
-import EditorStart from "components/EditorStart";
-import Editor from "components/Editor";
 import Footer from "components/Footer";
 import "./style.css";
+
+const Homepage = lazy(() => import("components/Homepage"));
+const Compilation = lazy(() => import("components/Compilation"));
+const EditorStart = lazy(() => import("components/EditorStart"));
+const Editor = lazy(() => import("components/Editor"));
 
 export default function App() {
   return (
@@ -17,20 +18,22 @@ export default function App() {
         </div>
 
         <div className="App--content">
-          <Switch>
-            <Route exact path="/">
-              <Homepage />
-            </Route>
-            <Route exact path="/compilation/:data">
-              <Compilation />
-            </Route>
-            <Route exact path={"/editor"}>
-              <EditorStart />
-            </Route>
-            <Route exact path={"/editor/:data"}>
-              <Editor />
-            </Route>
-          </Switch>
+          <Suspense fallback={<LoadingRoute />}>
+            <Switch>
+              <Route exact path="/">
+                <Homepage />
+              </Route>
+              <Route exact path="/compilation/:data">
+                <Compilation />
+              </Route>
+              <Route exact path={"/editor"}>
+                <EditorStart />
+              </Route>
+              <Route exact path={"/editor/:data"}>
+                <Editor />
+              </Route>
+            </Switch>
+          </Suspense>
         </div>
 
         <div className="App--footer">
@@ -39,4 +42,8 @@ export default function App() {
       </div>
     </Router>
   );
+}
+
+function LoadingRoute() {
+  return <div className="App--loading">...</div>;
 }
