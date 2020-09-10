@@ -7,8 +7,12 @@ import useTitle from "hooks/title";
 import { Player } from "components/Player";
 import "./style.css";
 
+interface CompilationParams {
+  data: string;
+}
+
 export default function Compilation() {
-  const { data: encodedData } = useParams();
+  const { data: encodedData } = useParams<CompilationParams>();
 
   const payload: ICompilation = useMemo(() => decode(encodedData), [
     encodedData,

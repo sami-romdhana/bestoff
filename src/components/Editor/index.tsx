@@ -15,10 +15,14 @@ import Playlist from "./Playlist";
 import Cutter from "./Cutter";
 import "./style.css";
 
+interface EditorParams {
+  data: string;
+}
+
 export default function Editor() {
   useTitle("Editor");
   const history = useHistory();
-  const { data: encodedData } = useParams();
+  const { data: encodedData } = useParams<EditorParams>();
   const payload: ICompilation = useMemo(() => decode(encodedData), [
     encodedData,
   ]);
