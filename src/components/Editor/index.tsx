@@ -7,12 +7,12 @@ import React, {
 } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import ReactPlayer from "react-player";
-import { ICompilation, IPlaylist } from "types";
+import { IClipBounds, ICompilation, IPlaylist } from "types";
 import { encode, decode } from "helpers/payload";
 import useTitle from "hooks/title";
 import useInput from "hooks/input";
-import Playlist from "./Playlist";
-import Cutter from "./Cutter";
+import Playlist from "components/Playlist";
+import Cutter from "components/Cutter";
 import "./style.css";
 
 interface EditorParams {
@@ -102,10 +102,36 @@ export default function Editor() {
     [setYouTubeURL]
   );
 
-  const skipTo = useCallback((to: number) => {
-    playerRef.current?.seekTo(to);
-    (playerRef.current?.getInternalPlayer() as any)?.playVideo();
-  }, []);
+  const skipTo = useCallback(
+    async (video: string, to: number) => {
+      setVideo(video);
+      await waitFor(() => playerRef.current === null, 1000);
+      playerRef.current?.seekTo(to);
+      (playerRef.current?.getInternalPlayer() as any)?.playVideo();
+    },
+    [setVideo]
+  );
+
+  const deleteClip = useCallback(
+    (video: string, clip: IClipBounds) => {
+      const newPlaylist = deepClone(playlist);
+      newPlaylist[video] = newPlaylist[video].filter(
+        (c) => c[0] !== clip[0] && c[1] !== clip[1]
+      );
+      setPlaylist(newPlaylist);
+    },
+    [playlist, setPlaylist]
+  );
+
+  const editClip = useCallback(
+    (video: string, clip: IClipBounds) => {
+      deleteClip(video, clip);
+      setVideo(video);
+      setClipStart(clip[0]);
+      setClipEnd(clip[1]);
+    },
+    [deleteClip, setVideo, setClipStart, setClipEnd]
+  );
 
   return (
     <div className="Editor">
@@ -185,6 +211,8 @@ export default function Editor() {
               entries={playlistEntries}
               setVideo={setVideo}
               skipTo={skipTo}
+              editClip={editClip}
+              deleteClip={deleteClip}
             />
           ) : (
             <div className="Editor--playlist-empty">No clips added</div>
@@ -193,6 +221,23 @@ export default function Editor() {
       </div>
     </div>
   );
+}
+
+async function waitFor(
+  condition: () => Promise<boolean> | boolean,
+  timeout: number
+) {
+  let giveup = false;
+
+  setTimeout(() => {
+    giveup = true;
+  }, timeout);
+
+  while (await condition()) {
+    if (giveup) break;
+  }
+
+  return;
 }
 
 const YOUTUBE_URL_REGEX = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;

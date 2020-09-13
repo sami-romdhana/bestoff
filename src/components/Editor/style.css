@@ -71,27 +71,6 @@
   justify-content: center;
 }
 
-.Cutter--clippers button,
-.Cutter--add button {
-  font-size: 1.2em;
-}
-
-.Cutter--boundaries,
-.Cutter--add {
-  text-align: center;
-}
-
-.Cutter--clippers {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 1em 0;
-}
-
-.Cutter--add {
-  margin-top: 1em;
-}
-
 .Editor--content-part {
   padding: 0.9em 1em 1.1em;
   background-color: rgba(255, 255, 255, 0.03);
@@ -135,42 +114,4 @@
 .Editor--content label > input,
 .Editor--share > input {
   width: 100%;
-}
-
-.Playlist--video + .Playlist--video {
-  margin-top: 1em;
-}
-
-.Playlist--video > div:first-child {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.Playlist--video pre {
-  display: inline-block;
-  background-color: rgba(0, 0, 0, 0.1);
-  font-family: monospace;
-  padding: 0.3em 0.5em;
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-.Playlist--video > ul {
-  margin-top: 1em;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.Playlist--video > ul > li {
-  padding: 0.5em;
-}
-
-.Playlist--video > ul > li + li {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.Playlist--video-expand {
-  padding: 1em;
-  margin: -1em;
-  cursor: pointer;
 }

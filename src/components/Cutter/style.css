@@ -1,0 +1,20 @@
+.Cutter--clippers button,
+.Cutter--add button {
+  font-size: 1.2em;
+}
+
+.Cutter--boundaries,
+.Cutter--add {
+  text-align: center;
+}
+
+.Cutter--clippers {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1em 0;
+}
+
+.Cutter--add {
+  margin-top: 1em;
+}

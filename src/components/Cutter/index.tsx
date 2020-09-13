@@ -1,5 +1,6 @@
 import React from "react";
 import { formatDuration } from "helpers/time";
+import "./style.css";
 
 interface CutterProps {
   youtubeID: string;
@@ -7,7 +8,7 @@ interface CutterProps {
   setEnd: () => unknown;
   clipStart: number | undefined;
   clipEnd: number | undefined;
-  skipTo: (x: number) => unknown;
+  skipTo: (video: string, t: number) => unknown;
   done: () => unknown;
 }
 
@@ -30,7 +31,7 @@ export default function Cutter(props: CutterProps) {
         <div className="Cutter--boundaries">
           [
           {clipStart ? (
-            <span onClick={() => skipTo(clipStart)}>
+            <span onClick={() => skipTo(youtubeID, clipStart)}>
               {formatDuration(clipStart)}
             </span>
           ) : (

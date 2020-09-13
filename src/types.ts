@@ -11,8 +11,10 @@ export type Entries<T> = {
   [K in keyof T]: [K, T[K]];
 }[keyof T][];
 
+export type IClipBounds = [number, number];
+
 export interface IPlaylist {
-  [key: string]: Array<[number, number]>;
+  [key: string]: Array<IClipBounds>;
 }
 
 export interface StateChangeEvent {
@@ -31,7 +33,7 @@ export enum PlayerState {
 export interface IClip {
   videoID: number;
   clipID: number;
-  bounds: [number, number];
+  bounds: IClipBounds;
   length: number;
 }
 

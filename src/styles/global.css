@@ -47,12 +47,25 @@ button {
   background: transparent;
   padding: 0.35em 0.65em 0.4em;
   border-radius: 0.2em;
+}
+
+button.small {
+  font-size: 0.75em;
+  letter-spacing: 0;
+  padding: 0.25em 0.65em 0.3em;
+}
+
+button:not([disabled]) {
   cursor: pointer;
 }
 
-button:hover {
+button:not([disabled]):hover {
   background: white;
   color: #333;
+}
+
+button[disabled] {
+  opacity: 0.8;
 }
 
 .global--wrapper {

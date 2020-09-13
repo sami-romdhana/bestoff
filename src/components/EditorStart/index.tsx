@@ -19,19 +19,24 @@ const defaultProjectPayload = encode(defaultProjectObj);
 export default function EditorStart() {
   const history = useHistory();
   const [code, codeInput] = useInput();
-
-  const valid = useMemo(() => {
+  const payload = useMemo(() => {
     try {
-      decode(code);
-      return true;
+      const payload =
+        code.includes("/editor/") || code.includes("/compilation/")
+          ? code.match(/\/(editor|compilation)\/(\S*)$/)?.[2] ?? code
+          : code;
+
+      decode(payload);
+
+      return payload;
     } catch {
-      return false;
+      return null;
     }
   }, [code]);
 
   const load = useCallback(() => {
-    history.push("/editor/" + code);
-  }, [history, code]);
+    history.push("/editor/" + payload);
+  }, [history, payload]);
 
   return (
     <div className="EditorStart">
@@ -50,7 +55,7 @@ export default function EditorStart() {
           {...codeInput}
         />
 
-        <button disabled={!valid} onClick={load}>
+        <button disabled={payload === null} onClick={load}>
           Load
         </button>
       </div>
