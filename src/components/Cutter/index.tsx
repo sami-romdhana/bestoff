@@ -1,18 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { formatDuration } from "helpers/time";
+import { EditorContext } from "contexts/editor";
 import "./style.css";
 
-interface CutterProps {
-  youtubeID: string;
-  setStart: () => unknown;
-  setEnd: () => unknown;
-  clipStart: number | undefined;
-  clipEnd: number | undefined;
-  skipTo: (video: string, t: number) => unknown;
-  done: () => unknown;
-}
-
-export default function Cutter(props: CutterProps) {
+export default function Cutter() {
   const {
     youtubeID,
     setStart,
@@ -21,7 +12,9 @@ export default function Cutter(props: CutterProps) {
     clipEnd,
     skipTo,
     done,
-  } = props;
+  } = useContext(EditorContext);
+
+  if (!youtubeID) return null;
 
   return (
     <div className="Cutter">

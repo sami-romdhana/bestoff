@@ -11,6 +11,7 @@ import { IClipBounds, ICompilation, IPlaylist } from "types";
 import { encode, decode } from "helpers/payload";
 import useTitle from "hooks/title";
 import useInput from "hooks/input";
+import { EditorContext } from "contexts/editor";
 import Playlist from "components/Playlist";
 import Cutter from "components/Cutter";
 import "./style.css";
@@ -134,92 +135,94 @@ export default function Editor() {
   );
 
   return (
-    <div className="Editor">
-      <div className="Editor--video">
-        <div>
-          {youtubeID ? (
-            <div className="Editor--player">
-              <ReactPlayer
-                ref={playerRef}
-                controls={true}
-                width={"100%"}
-                height={"100%"}
-                url={"https://youtube.com/watch?v=" + youtubeID}
-                config={{
-                  youtube: {
-                    playerVars: {
-                      showinfo: 0,
+    <EditorContext.Provider
+      value={{
+        youtubeID,
+        playlist,
+        clipStart,
+        clipEnd,
+        setVideo,
+        skipTo,
+        setStart,
+        setEnd,
+        done,
+        editClip,
+        deleteClip,
+      }}
+    >
+      <div className="Editor">
+        <div className="Editor--video">
+          <div>
+            {youtubeID ? (
+              <div className="Editor--player">
+                <ReactPlayer
+                  ref={playerRef}
+                  controls={true}
+                  width={"100%"}
+                  height={"100%"}
+                  url={"https://youtube.com/watch?v=" + youtubeID}
+                  config={{
+                    youtube: {
+                      playerVars: {
+                        showinfo: 0,
+                      },
                     },
-                  },
-                }}
-              />
-            </div>
-          ) : (
-            <div className="Editor--video-placeholder">
-              <div>Enter a video first</div>
-            </div>
-          )}
+                  }}
+                />
+              </div>
+            ) : (
+              <div className="Editor--video-placeholder">
+                <div>Enter a video first</div>
+              </div>
+            )}
 
-          <div className="Editor--video-input">
-            <input
-              type="url"
-              {...youtubeInput}
-              placeholder="Paste a YouTube video URL here"
-            />
-            {!!youtubeURL.length && youtubeID === null && <span>&times;</span>}
+            <div className="Editor--video-input">
+              <input
+                type="url"
+                {...youtubeInput}
+                placeholder="Paste a YouTube video URL here"
+              />
+              {!!youtubeURL.length && youtubeID === null && (
+                <span>&times;</span>
+              )}
+            </div>
+
+            {!!youtubeID && <Cutter />}
+          </div>
+        </div>
+        <div className="Editor--content">
+          <div className="Editor--content-part">
+            <h2>Details</h2>
+            <label>
+              <span>Title</span>
+              <input
+                type="text"
+                {...titleInput}
+                placeholder="Compilation title"
+              />
+            </label>
+            <label>
+              <span>Author</span>
+              <input type="text" {...authorInput} placeholder="Your name" />
+            </label>
           </div>
 
-          {!!youtubeID && (
-            <Cutter
-              youtubeID={youtubeID}
-              setStart={setStart}
-              setEnd={setEnd}
-              clipStart={clipStart}
-              clipEnd={clipEnd}
-              skipTo={skipTo}
-              done={done}
-            />
-          )}
+          <div className="Editor--content-part Editor--share">
+            <h2>Share</h2>
+            <input type="text" value={currentURL} readOnly={true} />
+          </div>
+
+          <div className="Editor--content-part">
+            <h2>Playlist</h2>
+            {playlistEntries.length ? (
+              <Playlist />
+            ) : (
+              <div className="Editor--playlist-empty">No clips added</div>
+            )}
+          </div>
         </div>
       </div>
-      <div className="Editor--content">
-        <div className="Editor--content-part">
-          <h2>Details</h2>
-          <label>
-            <span>Title</span>
-            <input
-              type="text"
-              {...titleInput}
-              placeholder="Compilation title"
-            />
-          </label>
-          <label>
-            <span>Author</span>
-            <input type="text" {...authorInput} placeholder="Your name" />
-          </label>
-        </div>
-
-        <div className="Editor--content-part Editor--share">
-          <h2>Share</h2>
-          <input type="text" value={currentURL} readOnly={true} />
-        </div>
-
-        <div className="Editor--content-part">
-          <h2>Playlist</h2>
-          {playlistEntries.length ? (
-            <Playlist
-              entries={playlistEntries}
-              setVideo={setVideo}
-              skipTo={skipTo}
-              editClip={editClip}
-              deleteClip={deleteClip}
-            />
-          ) : (
-            <div className="Editor--playlist-empty">No clips added</div>
-          )}
-        </div>
-      </div>
-    </div>
+    </EditorContext.Provider>
   );
 }
 

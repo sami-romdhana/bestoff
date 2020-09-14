@@ -1,38 +1,30 @@
-import React, { useState } from "react";
-import { IPlaylist, Entries, IClipBounds } from "types";
+import React, { useContext, useState } from "react";
+import { IClipBounds } from "types";
 import { formatDuration } from "helpers/time";
+import { EditorContext } from "contexts/editor";
 import "./style.css";
 
-interface BasisProps {
-  setVideo: (id: string) => unknown;
-  skipTo: (video: string, t: number) => unknown;
-  editClip: (video: string, clip: IClipBounds) => unknown;
-  deleteClip: (video: string, clip: IClipBounds) => unknown;
-}
-
-interface PlaylistProps extends BasisProps {
-  entries: Entries<IPlaylist>;
-}
-
-interface PlaylistVideoClipsProps extends BasisProps {
-  video: string;
-  clips: IClipBounds[];
-}
-
-export default function Playlist(props: PlaylistProps) {
-  const { entries, ...otherProps } = props;
+export default function Playlist() {
+  const { playlist } = useContext(EditorContext);
+  const entries = Object.entries(playlist);
 
   return (
     <>
       {entries.map(([video, clips]) => (
-        <PlaylistVideoClips video={video} clips={clips} {...otherProps} />
+        <PlaylistVideoClips video={video} clips={clips} />
       ))}
     </>
   );
 }
 
+interface PlaylistVideoClipsProps {
+  video: string;
+  clips: IClipBounds[];
+}
+
 function PlaylistVideoClips(props: PlaylistVideoClipsProps) {
-  const { video, clips, setVideo, skipTo, editClip, deleteClip } = props;
+  const { video, clips } = props;
+  const { setVideo, editClip, deleteClip } = useContext(EditorContext);
   const [expanded, setExpanded] = useState<boolean>(false);
 
   return (
@@ -64,9 +56,8 @@ function PlaylistVideoClips(props: PlaylistVideoClipsProps) {
           {clips.map((clip) => (
             <li className="Playlist--clip" key={clip[0] + "_" + clip[1]}>
               <div>
-                <MomentLink video={video} moment={clip[0]} skipTo={skipTo} />{" "}
-                &ndash;{" "}
-                <MomentLink video={video} moment={clip[1]} skipTo={skipTo} />
+                <MomentLink video={video} moment={clip[0]} /> &ndash;{" "}
+                <MomentLink video={video} moment={clip[1]} />
               </div>
               <div>
                 <button className="small" onClick={() => editClip(video, clip)}>
@@ -90,11 +81,11 @@ function PlaylistVideoClips(props: PlaylistVideoClipsProps) {
 interface MomentLinkProps {
   video: string;
   moment: number;
-  skipTo: (video: string, t: number) => unknown;
 }
 
 function MomentLink(props: MomentLinkProps) {
-  const { video, moment, skipTo } = props;
+  const { video, moment } = props;
+  const { skipTo } = useContext(EditorContext);
 
   return (
     <span
