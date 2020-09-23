@@ -86,10 +86,11 @@ export default function Seekbar(props: SeekbarProps) {
           })}
         </div>
         <div
-          className="Seekbar--hover"
+          className="Seekbar--move"
           onMouseMove={onMouseMove}
           onTouchMove={onTouchMove}
-        >
+        />
+        <div className="Seekbar--hover">
           <div
             style={{
               left: lefts.seekbar * 100 + "%",

@@ -12,7 +12,6 @@
   left: 0;
   height: 100%;
   width: 100%;
-  cursor: grab;
   overflow: hidden;
   border-radius: 2px;
 }
@@ -31,7 +30,23 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-.Seekbar .Seekbar--hover:hover > div {
+.Seekbar--move {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  cursor: grab;
+  z-index: 1000;
+}
+
+@media (min-width: 720px) {
+  .Seekbar--move {
+    height: 60%;
+  }
+}
+
+.Seekbar .Seekbar--move:hover + .Seekbar--hover > div {
   background: rgba(255, 255, 255, 0.3);
 }
 
