@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { IClipBounds } from "types";
 import { formatDuration } from "helpers/time";
 import { EditorContext } from "contexts/editor";
+import Icon from "components/Icon";
 import "./style.css";
 
 export default function Playlist() {
@@ -11,7 +12,7 @@ export default function Playlist() {
   return (
     <>
       {entries.map(([video, clips]) => (
-        <PlaylistVideoClips video={video} clips={clips} />
+        <PlaylistVideoClips key={video} video={video} clips={clips} />
       ))}
     </>
   );
@@ -30,6 +31,14 @@ function PlaylistVideoClips(props: PlaylistVideoClipsProps) {
   return (
     <div className="Playlist--video" key={video}>
       <div>
+        <button
+          className="Playlist--video-expand"
+          title={expanded ? "Collapse" : "Expand"}
+          onClick={() => setExpanded(!expanded)}
+          disabled={clips.length === 0}
+        >
+          <Icon name={expanded ? "chevron-down" : "chevron-right"} />
+        </button>
         <div>
           <span
             className="Playlist--link"
@@ -40,15 +49,6 @@ function PlaylistVideoClips(props: PlaylistVideoClipsProps) {
           </span>{" "}
           ({clips.length} clips)
         </div>
-        {clips.length !== 0 && (
-          <span
-            className="Playlist--video-expand"
-            title={expanded ? "Collapse" : "Expand"}
-            onClick={() => setExpanded(!expanded)}
-          >
-            {expanded ? "▼" : "▶"}
-          </span>
-        )}
       </div>
 
       {expanded && (
@@ -60,14 +60,19 @@ function PlaylistVideoClips(props: PlaylistVideoClipsProps) {
                 <MomentLink video={video} moment={clip[1]} />
               </div>
               <div>
-                <button className="small" onClick={() => editClip(video, clip)}>
-                  Edit
+                <button
+                  className="small"
+                  onClick={() => editClip(video, clip)}
+                  title="Edit"
+                >
+                  <Icon name="edit" />
                 </button>
                 <button
                   className="small"
                   onClick={() => deleteClip(video, clip)}
+                  title="Delete"
                 >
-                  Delete
+                  <Icon name="delete" />
                 </button>
               </div>
             </li>

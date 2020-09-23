@@ -55,7 +55,11 @@ export default function EditorStart() {
           {...codeInput}
         />
 
-        <button disabled={payload === null} onClick={load}>
+        <button
+          className="global--button global--button-small"
+          disabled={payload === null}
+          onClick={load}
+        >
           Load
         </button>
       </div>

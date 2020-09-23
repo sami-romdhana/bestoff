@@ -14,6 +14,7 @@ import useInput from "hooks/input";
 import { EditorContext } from "contexts/editor";
 import Playlist from "components/Playlist";
 import Cutter from "components/Cutter";
+import Icon from "components/Icon";
 import "./style.css";
 
 interface EditorParams {
@@ -134,6 +135,10 @@ export default function Editor() {
     [deleteClip, setVideo, setClipStart, setClipEnd]
   );
 
+  const copy = useCallback(() => {
+    navigator.clipboard.writeText(currentURL);
+  }, [currentURL]);
+
   return (
     <EditorContext.Provider
       value={{
@@ -172,7 +177,12 @@ export default function Editor() {
               </div>
             ) : (
               <div className="Editor--video-placeholder">
-                <div>Enter a video first</div>
+                <div>
+                  <div>Enter a video first</div>
+                  <div>
+                    <Icon name="arrow-down" />
+                  </div>
+                </div>
               </div>
             )}
 
@@ -190,9 +200,16 @@ export default function Editor() {
             {!!youtubeID && <Cutter />}
           </div>
         </div>
+
         <div className="Editor--content">
           <div className="Editor--content-part">
-            <h2>Details</h2>
+            <h2>
+              <span>
+                <Icon name="circle-information" />
+              </span>
+              <span>Details</span>
+            </h2>
+
             <label>
               <span>Title</span>
               <input
@@ -201,6 +218,7 @@ export default function Editor() {
                 placeholder="Compilation title"
               />
             </label>
+
             <label>
               <span>Author</span>
               <input type="text" {...authorInput} placeholder="Your name" />
@@ -208,12 +226,37 @@ export default function Editor() {
           </div>
 
           <div className="Editor--content-part Editor--share">
-            <h2>Share</h2>
-            <input type="text" value={currentURL} readOnly={true} />
+            <h2>
+              <span>
+                <Icon name="link" />
+              </span>
+              <span>Share</span>
+            </h2>
+
+            <div>
+              <input type="text" value={currentURL} readOnly={true} />
+              <button onClick={copy} title="Copy URL">
+                <Icon name="copy" />
+              </button>
+              <a
+                href={currentURL}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Open compilation in a new tab"
+              >
+                <Icon name="external-link" />
+              </a>
+            </div>
           </div>
 
           <div className="Editor--content-part">
-            <h2>Playlist</h2>
+            <h2>
+              <span>
+                <Icon name="list" />
+              </span>
+              <span>Playlist</span>
+            </h2>
+
             {playlistEntries.length ? (
               <Playlist />
             ) : (

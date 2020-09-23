@@ -41,7 +41,21 @@ input:focus {
     0 0 0.5em -0.1em var(--color-accent);
 }
 
+a {
+  color: inherit;
+}
+
 button {
+  border: none;
+  color: inherit;
+  background: transparent;
+}
+
+button:not([disabled]) {
+  cursor: pointer;
+}
+
+.global--button {
   border: 1px solid white;
   color: white;
   background: transparent;
@@ -49,23 +63,20 @@ button {
   border-radius: 0.2em;
 }
 
-button.small {
+.global--button.global--button-small {
   font-size: 0.75em;
   letter-spacing: 0;
   padding: 0.25em 0.65em 0.3em;
 }
 
-button:not([disabled]) {
-  cursor: pointer;
-}
-
-button:not([disabled]):hover {
+.global--button:not([disabled]):hover {
   background: white;
   color: #333;
 }
 
-button[disabled] {
-  opacity: 0.8;
+.global--button[disabled] {
+  opacity: 0.5;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .global--wrapper {

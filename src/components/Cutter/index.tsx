@@ -19,7 +19,9 @@ export default function Cutter() {
   return (
     <div className="Cutter">
       <div className="Cutter--clippers">
-        <button onClick={setStart}>Start clip here</button>
+        <button className="global--button" onClick={setStart}>
+          Start clip here
+        </button>
 
         <div className="Cutter--boundaries">
           [
@@ -33,11 +35,14 @@ export default function Cutter() {
           , {clipEnd ? formatDuration(clipEnd) : "?"}]
         </div>
 
-        <button onClick={setEnd}>End clip here</button>
+        <button className="global--button" onClick={setEnd}>
+          End clip here
+        </button>
       </div>
 
       <div className="Cutter--add">
         <button
+          className="global--button"
           onClick={done}
           disabled={
             !youtubeID || !clipStart || !clipEnd || clipStart >= clipEnd
