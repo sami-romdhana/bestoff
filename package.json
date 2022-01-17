@@ -2,7 +2,7 @@
   "name": "bestoff",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://bestoff.video",
+  "homepage": "https://sami-romdhana.github.io/bestoff",
   "dependencies": {
     "@types/lodash": "^4.14.161",
     "@types/node": "^14.10.0",
